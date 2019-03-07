@@ -1,6 +1,7 @@
 package org.whu.cs.bean;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -15,13 +16,14 @@ public class CheckDayInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // 信息id
+    @ApiModelProperty(value = "记录id")
     private Long info_id;
 
-    // 个人LeetCode主页地址，eg：https://leetcode.com/alexlj/
+    @ApiModelProperty(value = "个人LeetCode主页地址，eg：https://leetcode.com/alexlj/")
+
     private String address;
 
-    // 用户名，eg： alexlj
+    @ApiModelProperty(value = "用户名，eg： alexlj")
     private String username;
 
     // 头像url

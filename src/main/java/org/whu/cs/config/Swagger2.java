@@ -26,8 +26,8 @@ public class Swagger2 {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("一时打卡 | Swagger API")
-                .description("api文档")
+                .title("一时打卡 | 接口说明文档")
+                .description("基于 Swagger 生成")
                 .termsOfServiceUrl("http://group.hellogod.cn/")
                 .contact("lc-group-dev")
                 .version("1.0")

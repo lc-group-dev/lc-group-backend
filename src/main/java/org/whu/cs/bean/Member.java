@@ -1,6 +1,7 @@
 package org.whu.cs.bean;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Member {
@@ -8,7 +9,34 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
     private String username;
-    private String address;
+    private String url;
+    private int status;
+    private Date gmt_create;
+    private Date gmt_modified;
+
+    public Date getGmt_create() {
+        return gmt_create;
+    }
+
+    public void setGmt_create(Date gmt_create) {
+        this.gmt_create = gmt_create;
+    }
+
+    public Date getGmt_modified() {
+        return gmt_modified;
+    }
+
+    public void setGmt_modified(Date gmt_modified) {
+        this.gmt_modified = gmt_modified;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public Long getMemberId() {
         return memberId;
@@ -26,11 +54,11 @@ public class Member {
         this.username = username;
     }
 
-    public String getAddress() {
-        return address;
+    public String getUrl() {
+        return url;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

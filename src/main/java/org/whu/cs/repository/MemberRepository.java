@@ -6,6 +6,7 @@ import org.whu.cs.bean.Member;
 import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member,String> {
-    public Member findByAddress(String address);
-    public boolean existsByAddress(String address);
+    public Member findByUrl(String address);
+    public boolean existsByUrl(String address);
+    public List<Member> findByStatus(int status);
 }
