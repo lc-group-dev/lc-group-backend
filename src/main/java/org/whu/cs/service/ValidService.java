@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 /**
  * 数据校验类
  */
+
+
 @Service
 public class ValidService {
 
