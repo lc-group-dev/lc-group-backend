@@ -3,11 +3,14 @@ package org.whu.cs.controller;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.whu.cs.bean.CheckDayInfo;
 import org.whu.cs.bean.GroupContantValue;
 import org.whu.cs.service.CheckDayInfoService;
+import org.whu.cs.util.AjaxJson;
+import org.whu.cs.vo.RankVo;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.text.NumberFormat;
@@ -41,6 +44,40 @@ public class CheckDayInfoController {
         return checkDayInfoService.checkDayInfos(date);
     }
 
+    /*这个接口暂时保留*/
+    @ApiOperation(value = "获取小组打卡排行榜", notes = "")
+    @ApiImplicitParam(name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
+    @GetMapping(value = "/checkRank")
+    @ResponseBody
+    public Map<String, RankVo> checkRankByDate(@RequestParam String date) {
+        return null;
+    }
+
+    /**
+     * Check ratio map.
+     *
+     * @param date the date
+     * @return the map
+     * @throws ParseException the parse exception
+     */
+    @ApiOperation(value = "获取小组打卡率数据", notes = "小组打卡曲线：从起始日期到现在的所有打卡数据")
+    @ApiImplicitParam(name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
+    @GetMapping(value = "/checkRatioList")
+    @ResponseBody
+    public Map<String, Double> checkRatio(@RequestParam String date) throws ParseException {
+
+        String start = GroupContantValue.getStart_of_date();
+        Map<String, Double> result = new HashMap<>();
+        List<String> days = checkDayInfoService.getBetweenDates(start, date);
+        if (days != null && days.size() > 0) {
+            for (String day : days) {
+                result.put(day, checkDayInfoService.checkRatio(day));
+            }
+        }
+
+        return result;
+    }
+
     /**
      * Create check day info.
      *
@@ -48,11 +85,26 @@ public class CheckDayInfoController {
      * @return the check day info
      */
     @ApiIgnore
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public CheckDayInfo create(CheckDayInfo checkDayInfo) {
+    public CheckDayInfo create(@RequestBody CheckDayInfo checkDayInfo) {
         checkDayInfoService.create(checkDayInfo);
         return checkDayInfo;
+    }
+
+    @ApiOperation(value = "获取爬虫数据写入CheckDayInfo表", notes = "传入CheckDayInfo对象")
+    @PostMapping (value = "/putDataToCheckDayInfo")
+    @ResponseBody
+    public AjaxJson putDataToCheckDayInfo(@RequestBody CheckDayInfo checkDayInfo) {
+        if (checkDayInfo == null) {
+            return AjaxJson.error("爬虫数据为空，请重试");
+        } else if (checkDayInfoService.saveToDB(checkDayInfo)) {
+            return AjaxJson.success("写入打卡数据成功");
+        } else {
+            return AjaxJson.error("写入数据失败");
+        }
+
+
     }
 
     /**
@@ -86,31 +138,6 @@ public class CheckDayInfoController {
         summary.put("checkRatio", format.format(ratio));
 
         return summary;
-    }
-
-    /**
-     * Check ratio map.
-     *
-     * @param date the date
-     * @return the map
-     * @throws ParseException the parse exception
-     */
-    @ApiOperation(value = "获取小组打卡率数据", notes = "小组打卡曲线：从起始日期到现在的所有打卡数据")
-    @ApiImplicitParam(name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
-    @GetMapping(value = "/checkRatioList")
-    @ResponseBody
-    public Map<String, Double> checkRatio(@RequestParam String date) throws ParseException {
-
-        String start = GroupContantValue.getStart_of_date();
-        Map<String, Double> result = new HashMap<>();
-        List<String> days = checkDayInfoService.getBetweenDates(start, date);
-        if (days != null && days.size() > 0) {
-            for (String day : days) {
-                result.put(day, checkDayInfoService.checkRatio(day));
-            }
-        }
-
-        return result;
     }
 
 }

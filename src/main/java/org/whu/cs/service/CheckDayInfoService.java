@@ -68,4 +68,12 @@ public class CheckDayInfoService {
         }
         return result;
     }
+
+    public boolean saveToDB(CheckDayInfo checkDayInfo){
+        if (checkDayInfo==null){
+            return false;
+        }
+        checkDayInfoRepository.save(checkDayInfo);
+        return true;
+    }
 }
