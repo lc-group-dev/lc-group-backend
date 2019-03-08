@@ -12,12 +12,12 @@ public class UpvoteService {
     @Autowired
     private UpvoteRepository upvoteRepository;
 
-//    public List<Upvote> getUpvoteListByFromAndDate(String from, String date) {
-//        return upvoteRepository.findByToMemberIdAndgmt_createContains(from, date);
-//    }
-//
-//    public Integer getUpvoteCountByFromAndDate(String from, String date) {
-//        return upvoteRepository.countByToMemberIdAndgmt_createContains(from, date);
-//    }
+    public List<Upvote> getUpvoteListByFromAndDate(String to, String date) {
+        return upvoteRepository.findByToMemberIdAndDate(to, date);
+    }
+
+    public Integer getUpvoteCountByFromAndDate(String to, String date) {
+        return upvoteRepository.countByToMemberIdAndDate(to, date);
+    }
 
 }
