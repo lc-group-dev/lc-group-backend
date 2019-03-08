@@ -22,6 +22,6 @@ public class MemberService {
 
     
     public void save(Member member) {
-        memberRepository.save(member);
+        memberRepository.saveAndFlush(member);
     }
 }

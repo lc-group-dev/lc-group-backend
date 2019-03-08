@@ -85,7 +85,7 @@ public class CheckDayInfoController {
      * @return the check day info
      */
     @ApiIgnore
-    @PostMapping(value = "/create",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/create")
     @ResponseBody
     public CheckDayInfo create(@RequestBody CheckDayInfo checkDayInfo) {
         checkDayInfoService.create(checkDayInfo);

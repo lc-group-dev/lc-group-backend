@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.whu.cs.bean.Member;
 import org.whu.cs.service.MemberService;
 import org.whu.cs.service.ValidService;
+import org.whu.cs.util.AjaxJson;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -54,4 +55,19 @@ public class MemberController {
     public List<Member> getMemberByStatus(@RequestParam int status) {
         return memberService.findALlByStatus(status);
     }
+
+    @ApiOperation(value = "获取爬虫数据写入Member表", notes = "传入Member表对象")
+    @PostMapping(value = "/putDataToMember")
+    @ResponseBody
+    public AjaxJson putDataToMember(@RequestBody Member member) {
+        if (member == null) {
+            return AjaxJson.error("爬虫数据为空，请重试");
+        }
+        memberService.save(member);
+        return AjaxJson.success("写入数据库成功");
+    }
+
+
 }
+
+

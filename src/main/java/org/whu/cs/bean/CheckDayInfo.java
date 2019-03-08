@@ -2,6 +2,7 @@ package org.whu.cs.bean;
 
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
