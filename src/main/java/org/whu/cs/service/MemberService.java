@@ -20,6 +20,7 @@ public class MemberService {
         return memberRepository.findByStatus(status);
     }
 
+    
     public void save(Member member) {
         memberRepository.save(member);
     }
