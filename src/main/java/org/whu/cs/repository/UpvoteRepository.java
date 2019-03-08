@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UpvoteRepository extends JpaRepository<Upvote, String> {
 
-    List<Upvote> findByToMemberIdAndDate(String toMemberId, String date);
+    List<Upvote> findByToMemberIdAndDate(Long toMemberId, String date);
 
-    Integer countByToMemberIdAndDate(String toMemberId, String date);
+    Integer countByToMemberIdAndDate(Long toMemberId, String date);
 }

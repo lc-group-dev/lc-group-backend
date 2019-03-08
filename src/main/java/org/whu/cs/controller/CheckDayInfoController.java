@@ -25,7 +25,7 @@ import java.util.Map;
  * The type Check day info controller.
  */
 @Controller
-@RequestMapping(value = "/api//checkDayInfo")
+@RequestMapping(value = "/api/checkDayInfo")
 public class CheckDayInfoController {
     @Autowired
     private CheckDayInfoService checkDayInfoService;
