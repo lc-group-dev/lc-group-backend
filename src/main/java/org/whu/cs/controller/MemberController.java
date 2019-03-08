@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@RequestMapping(value = "/api//member")
+@RequestMapping(value = "/api/member")
 @Controller
 public class MemberController {
     @Autowired

@@ -16,15 +16,15 @@ public class Upvote {
     private Long upvoteID;
 
     // 点赞用户
-    private String fromMemberId;
+    private Long fromMemberId;
     // 被点赞用户
-    private String toMemberId;
+    private Long toMemberId;
     // 点击次数（点赞可连击）
     private int clickTime;
     // 记录创建时间
-    private Date gmt_create;
+    private Date createTime;
     // 记录修改时间
-    private Date gmt_modified;
+    private Date modifiedTime;
     // 点赞状态
     private int status;
     // 点赞日期，格式 yyyy-MM-dd
@@ -48,40 +48,30 @@ public class Upvote {
         this.upvoteID = upvoteID;
     }
 
-    /**
-     * Gets from member id.
-     *
-     * @return the from member id
-     */
-    public String getFromMemberId() {
+    public Long getFromMemberId() {
         return fromMemberId;
     }
 
-    /**
-     * Sets from member id.
-     *
-     * @param fromMemberId the from member id
-     */
-    public void setFromMemberId(String fromMemberId) {
+    public void setFromMemberId(Long fromMemberId) {
         this.fromMemberId = fromMemberId;
     }
 
-    /**
-     * Gets to member id.
-     *
-     * @return the to member id
-     */
-    public String getToMemberId() {
+    public Long getToMemberId() {
         return toMemberId;
     }
 
-    /**
-     * Sets to member id.
-     *
-     * @param toMemberId the to member id
-     */
-    public void setToMemberId(String toMemberId) {
+    public void setToMemberId(Long toMemberId) {
         this.toMemberId = toMemberId;
+    }
+
+
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     /**
@@ -102,22 +92,20 @@ public class Upvote {
         this.clickTime = clickTime;
     }
 
-    /**
-     * Gets gmt create.
-     *
-     * @return the gmt create
-     */
-    public Date getGmt_create() {
-        return gmt_create;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    /**
-     * Sets gmt create.
-     *
-     * @param gmt_create the gmt create
-     */
-    public void setGmt_create(Date gmt_create) {
-        this.gmt_create = gmt_create;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getModifiedTime() {
+        return modifiedTime;
+    }
+
+    public void setModifiedTime(Date modifiedTime) {
+        this.modifiedTime = modifiedTime;
     }
 
     /**

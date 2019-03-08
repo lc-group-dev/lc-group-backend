@@ -1,5 +1,8 @@
 package org.whu.cs.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +30,16 @@ public class UpvoteController {
      * @param date       the date
      * @return the upvote list by from and date
      */
+    @ApiOperation(value = "用户某日获赞详情", notes = "")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "toMemberId", value = "被赞用户id", required = true, dataType = "Long"),
+                    @ApiImplicitParam(name = "date", value = "日期，格式yyyy-MM-dd", required = true, dataType = "String")
+            }
+    )
     @GetMapping(value = "/votedList")
     @ResponseBody
-    public List<Upvote> getUpvoteListByFromAndDate(String toMemberId, String date) {
+    public List<Upvote> getUpvoteListByFromAndDate(Long toMemberId, String date) {
         return upvoteService.getUpvoteListByFromAndDate(toMemberId, date);
     }
 
@@ -40,9 +50,16 @@ public class UpvoteController {
      * @param date       the date
      * @return the upvote count by from and date
      */
+    @ApiOperation(value = "用户某日获赞总数", notes = "")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "toMemberId", value = "被赞用户id", required = true, dataType = "Long"),
+                    @ApiImplicitParam(name = "date", value = "日期，格式yyyy-MM-dd", required = true, dataType = "String")
+            }
+    )
     @GetMapping(value = "/votedCount")
     @ResponseBody
-    public Integer getUpvoteCountByFromAndDate(String toMemberId, String date) {
+    public Integer getUpvoteCountByFromAndDate(Long toMemberId, String date) {
         return upvoteService.getUpvoteCountByFromAndDate(toMemberId, date);
     }
 }
