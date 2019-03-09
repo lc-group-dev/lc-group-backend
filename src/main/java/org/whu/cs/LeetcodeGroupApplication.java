@@ -20,7 +20,7 @@ public class LeetcodeGroupApplication {
         SpringApplication.run(LeetcodeGroupApplication.class, args);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    /*@ExceptionHandler(IllegalArgumentException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleBadRequests(HttpServletRequest req, Exception e) throws Exception {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -44,7 +44,7 @@ public class LeetcodeGroupApplication {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.message = e.getMessage();
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
+    }*/
 
 
 }
