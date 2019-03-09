@@ -1,6 +1,6 @@
 # 一时打卡 后端部分
 
-## 框架
+# 框架
 
 Spring Boot 2.1.2
 
@@ -10,6 +10,12 @@ Spring Boot 2.1.2
  - `service` 服务层
  - `controller` 对外发布接口
 
-## api文档
+# api文档
 
 文档基于swagger生成
+
+# License
+
+[GNU General Public License v3.0
+](https://github.com/lc-group-dev/lc-group-backend/blob/master/LICENSE)
+
