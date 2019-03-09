@@ -1,10 +1,8 @@
 package org.whu.cs.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.whu.cs.bean.CheckDayInfo;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 

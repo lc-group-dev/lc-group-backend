@@ -2,7 +2,6 @@ package org.whu.cs.bean;
 
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -49,10 +48,10 @@ public class CheckDayInfo {
     private int isChecked;
 
     // 创建时间
-    private Date gmt_create;
+    private Date createTime;
 
     // 修改时间
-    private Date gmt_modified;
+    private Date modifiedTime;
 
     // 今日刷题数
     @Column(nullable = true)
@@ -223,17 +222,17 @@ public class CheckDayInfo {
      *
      * @return the gmt create
      */
-    public Date getGmt_create() {
-        return gmt_create;
+    public Date getCreateTime() {
+        return createTime;
     }
 
     /**
      * Sets gmt create.
      *
-     * @param gmt_create the gmt create
+     * @param createTime the gmt create
      */
-    public void setGmt_create(Date gmt_create) {
-        this.gmt_create = gmt_create;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     /**
@@ -242,7 +241,7 @@ public class CheckDayInfo {
      * @return the gmt modified
      */
     public Date getGmt_modified() {
-        return gmt_modified;
+        return modifiedTime;
     }
 
     /**
@@ -251,7 +250,7 @@ public class CheckDayInfo {
      * @param gmt_modified the gmt modified
      */
     public void setGmt_modified(Date gmt_modified) {
-        this.gmt_modified = gmt_modified;
+        this.modifiedTime = gmt_modified;
     }
 
     /**
