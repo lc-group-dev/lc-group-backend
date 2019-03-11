@@ -19,7 +19,7 @@ public class Member {
     // 用户url
     private String url;
 
-    // 用户状态
+    // 用户状态 0 normal 1 delete 2locked
     private int status;
 
     // 记录创建时间

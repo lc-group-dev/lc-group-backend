@@ -1,6 +1,7 @@
 package org.whu.cs.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.util.StringUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -8,12 +9,15 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.whu.cs.bean.WeChatAppInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.whu.cs.bean.AppLoginInfo;
+import org.whu.cs.bean.WeChatUserInfo;
+import org.whu.cs.repository.WeChatAppRepository;
+import org.whu.cs.service.WeChatAppService;
 
 import java.net.URI;
+import java.util.Date;
 
 /**
  * @author:Lucas
@@ -24,13 +28,22 @@ import java.net.URI;
 @RequestMapping("/weChat")
 public class WeChatAppController {
 
+    @Autowired
+    WeChatAppService weChatAppService;
+
+    @Autowired
+    WeChatAppRepository weChatAppRepository;
+
     @ApiOperation(value = "小程序登录接口", notes = "传入微信的code")
-    @RequestMapping("/login")
+    @GetMapping("/login")
     @ResponseBody
-    public String login(String code) {
+    public String login(@RequestParam String code) {
+        if (StringUtil.isEmpty(code)) {
+            return null;
+        }
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + WeChatAppInfo.appId + "&secret=" + WeChatAppInfo.secret + "&js_code=" + code + "&grant_type=authorization_code";
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + AppLoginInfo.appId + "&secret=" + AppLoginInfo.secret + "&js_code=" + code + "&grant_type=authorization_code";
         String resultString = " ";
         try {
 //            构建URI
@@ -41,21 +54,33 @@ public class WeChatAppController {
             HttpGet httpGet = new HttpGet(uri);
             CloseableHttpResponse response = httpClient.execute(httpGet);
 //            返回请求的结果
-            int resultCode =response.getStatusLine().getStatusCode();
+            int resultCode = response.getStatusLine().getStatusCode();
             if (resultCode == 200) {
                 resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
-            }else {
-                return "请求失败，错误码是："+resultCode;
+            } else {
+                return "请求失败，错误码是：" + resultCode;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         JSONObject jsonObject = (JSONObject) JSONObject.parse(resultString);
-        String openId = jsonObject.getString("openId");
-        String sessionKey =jsonObject.getString("sessionKey");
+        /*当jsonObject的size为2时返回的时候错误信息*/
+        if (jsonObject == null || jsonObject.size() == 2) {
+            return jsonObject.toString();
+        }
+        String openId = jsonObject.getString("openid");
+        String sessionKey = jsonObject.getString("session_key");
+        WeChatUserInfo weChatUserInfo = new WeChatUserInfo();
+        if (StringUtil.isEmpty(openId)) {
+            weChatUserInfo.setOpenId(openId);
+            weChatUserInfo.setCreatedDt(new Date());
+        }
+        weChatAppRepository.save(weChatUserInfo);
+        String token = weChatAppService.wxCreateToken(openId);
 
-        return "返回openid和token";
+
+        return openId;
     }
 
 }
