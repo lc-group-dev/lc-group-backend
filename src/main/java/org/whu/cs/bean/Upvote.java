@@ -19,13 +19,11 @@ public class Upvote {
     private String fromMemberId;
     // 被点赞用户
     private String toMemberId;
-    // 点击次数（点赞可连击）
-    private int clickTime;
     // 记录创建时间
     private Date gmt_create;
     // 记录修改时间
     private Date gmt_modified;
-    // 点赞状态
+    // 点赞状态 0-未点赞 1-已点赞
     private int status;
     // 点赞日期，格式 yyyy-MM-dd
     private String date;
@@ -85,24 +83,6 @@ public class Upvote {
     }
 
     /**
-     * Gets click time.
-     *
-     * @return the click time
-     */
-    public int getClickTime() {
-        return clickTime;
-    }
-
-    /**
-     * Sets click time.
-     *
-     * @param clickTime the click time
-     */
-    public void setClickTime(int clickTime) {
-        this.clickTime = clickTime;
-    }
-
-    /**
      * Gets gmt create.
      *
      * @return the gmt create
@@ -136,5 +116,42 @@ public class Upvote {
      */
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    /**
+     * Gets date.
+     *
+     * @reture date
+     */
+    public String getDate() {
+        return date;
+    }
+
+    /**
+     * Sets date.
+     *
+     * @param date the date
+     */
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    /**
+     * Gets gmt_modified.
+     *
+     * @reture gmt_modified
+     */
+
+    public Date getGmt_modified() {
+        return gmt_modified;
+    }
+
+    /**
+     * Sets gmt_modified.
+     *
+     * @param gmt_modified the modifier date
+     */
+    public void setGmt_modified(Date gmt_modified) {
+        this.gmt_modified = gmt_modified;
     }
 }
