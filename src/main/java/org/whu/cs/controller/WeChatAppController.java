@@ -43,7 +43,9 @@ public class WeChatAppController {
         }
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + AppLoginInfo.appId + "&secret=" + AppLoginInfo.secret + "&js_code=" + code + "&grant_type=authorization_code";
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + AppLoginInfo.appId
+                + "&secret=" + AppLoginInfo.secret
+                + "&js_code=" + code + "&grant_type=authorization_code";
         String resultString = " ";
         try {
 //            构建URI
@@ -65,7 +67,7 @@ public class WeChatAppController {
         }
 
         JSONObject jsonObject = (JSONObject) JSONObject.parse(resultString);
-        /*当jsonObject的size为2时返回的时候错误信息*/
+        /*当jsonObject的size为2时返回的是错误信息*/
         if (jsonObject == null || jsonObject.size() == 2) {
             return jsonObject.toString();
         }
@@ -80,7 +82,7 @@ public class WeChatAppController {
         String token = weChatAppService.wxCreateToken(openId);
 
 
-        return openId;
+        return token;
     }
 
 }

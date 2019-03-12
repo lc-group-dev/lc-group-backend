@@ -1,8 +1,11 @@
 package org.whu.cs.service;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.pagehelper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +25,6 @@ import java.util.Map;
 @Service
 public class WeChatAppService {
 
-    @Autowired
-    WeChatAppRepository weChatAppRepository;
-
     /**
      * token秘钥，请勿泄露，请勿随便修改 backups:JKKLJOoasdlfj
      */
@@ -34,6 +34,21 @@ public class WeChatAppService {
      */
     public static final int calendarField = Calendar.DATE;
     public static final int calendarInterval = 10;
+    @Autowired
+    WeChatAppRepository weChatAppRepository;
+
+    //解密wx的token
+    public Map<String, Claim> decryToken(String token) {
+        DecodedJWT jwt = null;
+        try {
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
+            jwt = verifier.verify(token);
+        } catch (Exception e) {
+            // e.printStackTrace();
+            // token 校验失败, 抛出Token验证非法异常
+        }
+        return jwt.getClaims();
+    }
 
     /*构建微信专属token*/
     public String wxCreateToken(String openId) {
