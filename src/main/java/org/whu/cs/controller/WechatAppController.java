@@ -12,9 +12,9 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.whu.cs.bean.AppLoginInfo;
-import org.whu.cs.bean.WeChatUserInfo;
-import org.whu.cs.repository.WeChatAppRepository;
-import org.whu.cs.service.WeChatAppService;
+import org.whu.cs.bean.WechatUserInfo;
+import org.whu.cs.repository.WechatAppRepository;
+import org.whu.cs.service.WechatAppService;
 
 import java.net.URI;
 import java.util.Date;
@@ -26,13 +26,13 @@ import java.util.Date;
  **/
 @RestController
 @RequestMapping("/weChat")
-public class WeChatAppController {
+public class WechatAppController {
 
     @Autowired
-    WeChatAppService weChatAppService;
+    WechatAppService wechatAppService;
 
     @Autowired
-    WeChatAppRepository weChatAppRepository;
+    WechatAppRepository wechatAppRepository;
 
     @ApiOperation(value = "小程序登录接口", notes = "传入微信的code")
     @GetMapping("/login")
@@ -73,16 +73,25 @@ public class WeChatAppController {
         }
         String openId = jsonObject.getString("openid");
         String sessionKey = jsonObject.getString("session_key");
-        WeChatUserInfo weChatUserInfo = new WeChatUserInfo();
+        WechatUserInfo wechatUserInfo = new WechatUserInfo();
         if (StringUtil.isEmpty(openId)) {
-            weChatUserInfo.setOpenId(openId);
-            weChatUserInfo.setCreatedDt(new Date());
+            wechatUserInfo.setOpenId(openId);
+            wechatUserInfo.setCreatedDt(new Date());
         }
-        weChatAppRepository.save(weChatUserInfo);
-        String token = weChatAppService.wxCreateToken(openId);
+
+
+        wechatAppRepository.save(wechatUserInfo);
+        String token = wechatAppService.wxCreateToken(openId);
 
 
         return token;
     }
 
+    @ApiOperation(value = "测试写入接口", notes = "传入微信的code")
+    @PostMapping(value = "/Save")
+    @ResponseBody
+    public void saveEntity (@RequestBody WechatUserInfo wechatUserInfo){
+
+        wechatAppService.testSave(wechatUserInfo);
+    }
 }

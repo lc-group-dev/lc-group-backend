@@ -9,7 +9,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.pagehelper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.whu.cs.repository.WeChatAppRepository;
+import org.springframework.util.StringUtils;
+import org.whu.cs.bean.WechatUserInfo;
+import org.whu.cs.repository.WechatAppRepository;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
@@ -17,25 +19,53 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.whu.cs.bean.AppLoginInfo.SECRET;
+
 /**
  * @author:Lucas
  * @description:
  * @Date:2019/3/11
  **/
 @Service
-public class WeChatAppService {
+public class WechatAppService {
 
-    /**
-     * token秘钥，请勿泄露，请勿随便修改 backups:JKKLJOoasdlfj
-     */
-    public static final String SECRET = "leetcodegroup2019";
     /**
      * token 过期时间: 10天
      */
     public static final int calendarField = Calendar.DATE;
     public static final int calendarInterval = 10;
     @Autowired
-    WeChatAppRepository weChatAppRepository;
+    WechatAppRepository wechatAppRepository;
+
+    public boolean testSave(WechatUserInfo wechatUserInfo) {
+        try {
+            wechatAppRepository.save(wechatUserInfo);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public WechatUserInfo vailUserByToken(String token) {
+        WechatUserInfo wechatUserInfo;
+        if (StringUtils.isEmpty(token)) {
+            return new WechatUserInfo();
+        }
+        Map<String, Claim> getUserByToken = decryToken(token);
+        if (getUserByToken == null) {
+            return null;
+        }
+//        获取token里面的openid
+        String openId = getUserByToken.get("openId").asString();
+        if (StringUtils.isEmpty(openId)) {
+            return null;
+        }
+        wechatUserInfo = wechatAppRepository.findByOpenId(openId);
+        if (wechatUserInfo == null) {
+            return null;
+        }
+        return wechatUserInfo;
+    }
 
     //解密wx的token
     public Map<String, Claim> decryToken(String token) {
@@ -88,5 +118,4 @@ public class WeChatAppService {
             return null;
         }
     }
-
 }
