@@ -2,6 +2,8 @@ package org.whu.cs.bean;
 
 
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +12,8 @@ import java.util.Date;
 /**
  * 存储用户每日的打卡信息，数据由爬虫获取
  */
+@DynamicInsert
+@DynamicUpdate
 @Entity
 @Table(name = "check_day_info")
 
@@ -72,6 +76,9 @@ public class CheckDayInfo {
     // 提交次数
     @Column()
     private int acceptedSubmission;
+
+    @Column(columnDefinition="int default 0")
+    private int upvoteNumber=0;
 
     /**
      * Gets info id.
@@ -344,4 +351,21 @@ public class CheckDayInfo {
     }
 
 
+    /**
+     * Gets upvoteNumber
+     *
+     * @return upvoteNumber
+     */
+    public int getUpvoteNumber() {
+        return upvoteNumber;
+    }
+
+    /**
+     * Sets upvoteNumber
+     *
+     * @param upvoteNumber upvoteNumber
+     */
+    public void setUpvoteNumber(int upvoteNumber) {
+        this.upvoteNumber = upvoteNumber;
+    }
 }
