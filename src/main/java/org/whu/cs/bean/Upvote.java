@@ -16,16 +16,14 @@ public class Upvote {
     private Long upvoteID;
 
     // 点赞用户
-    private Long fromMemberId;
+    private String fromMemberId;
     // 被点赞用户
-    private Long toMemberId;
-    // 点击次数（点赞可连击）
-    private int clickTime;
+    private String toMemberId;
     // 记录创建时间
-    private Date createTime;
+    private Date gmt_create;
     // 记录修改时间
-    private Date modifiedTime;
-    // 点赞状态
+    private Date gmt_modified;
+    // 点赞状态 0-未点赞 1-已点赞
     private int status;
     // 点赞日期，格式 yyyy-MM-dd
     private String date;
@@ -48,64 +46,58 @@ public class Upvote {
         this.upvoteID = upvoteID;
     }
 
-    public Long getFromMemberId() {
+    /**
+     * Gets from member id.
+     *
+     * @return the from member id
+     */
+    public String getFromMemberId() {
         return fromMemberId;
     }
 
-    public void setFromMemberId(Long fromMemberId) {
+    /**
+     * Sets from member id.
+     *
+     * @param fromMemberId the from member id
+     */
+    public void setFromMemberId(String fromMemberId) {
         this.fromMemberId = fromMemberId;
     }
 
-    public Long getToMemberId() {
+    /**
+     * Gets to member id.
+     *
+     * @return the to member id
+     */
+    public String getToMemberId() {
         return toMemberId;
     }
 
-    public void setToMemberId(Long toMemberId) {
+    /**
+     * Sets to member id.
+     *
+     * @param toMemberId the to member id
+     */
+    public void setToMemberId(String toMemberId) {
         this.toMemberId = toMemberId;
     }
 
-
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    /**
+     * Gets gmt create.
+     *
+     * @return the gmt create
+     */
+    public Date getGmt_create() {
+        return gmt_create;
     }
 
     /**
-     * Gets click time.
+     * Sets gmt create.
      *
-     * @return the click time
+     * @param gmt_create the gmt create
      */
-    public int getClickTime() {
-        return clickTime;
-    }
-
-    /**
-     * Sets click time.
-     *
-     * @param clickTime the click time
-     */
-    public void setClickTime(int clickTime) {
-        this.clickTime = clickTime;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
-
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
+    public void setGmt_create(Date gmt_create) {
+        this.gmt_create = gmt_create;
     }
 
     /**
@@ -124,5 +116,42 @@ public class Upvote {
      */
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    /**
+     * Gets date.
+     *
+     * @reture date
+     */
+    public String getDate() {
+        return date;
+    }
+
+    /**
+     * Sets date.
+     *
+     * @param date the date
+     */
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    /**
+     * Gets gmt_modified.
+     *
+     * @reture gmt_modified
+     */
+
+    public Date getGmt_modified() {
+        return gmt_modified;
+    }
+
+    /**
+     * Sets gmt_modified.
+     *
+     * @param gmt_modified the modifier date
+     */
+    public void setGmt_modified(Date gmt_modified) {
+        this.gmt_modified = gmt_modified;
     }
 }

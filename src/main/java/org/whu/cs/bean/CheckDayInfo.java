@@ -2,7 +2,8 @@ package org.whu.cs.bean;
 
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +12,8 @@ import java.util.Date;
 /**
  * 存储用户每日的打卡信息，数据由爬虫获取
  */
+@DynamicInsert
+@DynamicUpdate
 @Entity
 @Table(name = "check_day_info")
 
@@ -49,10 +52,10 @@ public class CheckDayInfo {
     private int isChecked;
 
     // 创建时间
-    private Date gmt_create;
+    private Date createTime;
 
     // 修改时间
-    private Date gmt_modified;
+    private Date modifiedTime;
 
     // 今日刷题数
     @Column(nullable = true)
@@ -73,6 +76,9 @@ public class CheckDayInfo {
     // 提交次数
     @Column()
     private int acceptedSubmission;
+
+    @Column(columnDefinition="int default 0")
+    private int upvoteNumber=0;
 
     /**
      * Gets info id.
@@ -223,17 +229,17 @@ public class CheckDayInfo {
      *
      * @return the gmt create
      */
-    public Date getGmt_create() {
-        return gmt_create;
+    public Date getCreateTime() {
+        return createTime;
     }
 
     /**
      * Sets gmt create.
      *
-     * @param gmt_create the gmt create
+     * @param createTime the gmt create
      */
-    public void setGmt_create(Date gmt_create) {
-        this.gmt_create = gmt_create;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     /**
@@ -242,7 +248,7 @@ public class CheckDayInfo {
      * @return the gmt modified
      */
     public Date getGmt_modified() {
-        return gmt_modified;
+        return modifiedTime;
     }
 
     /**
@@ -251,7 +257,7 @@ public class CheckDayInfo {
      * @param gmt_modified the gmt modified
      */
     public void setGmt_modified(Date gmt_modified) {
-        this.gmt_modified = gmt_modified;
+        this.modifiedTime = gmt_modified;
     }
 
     /**
@@ -345,4 +351,21 @@ public class CheckDayInfo {
     }
 
 
+    /**
+     * Gets upvoteNumber
+     *
+     * @return upvoteNumber
+     */
+    public int getUpvoteNumber() {
+        return upvoteNumber;
+    }
+
+    /**
+     * Sets upvoteNumber
+     *
+     * @param upvoteNumber upvoteNumber
+     */
+    public void setUpvoteNumber(int upvoteNumber) {
+        this.upvoteNumber = upvoteNumber;
+    }
 }
