@@ -29,10 +29,9 @@ import java.util.Date;
 public class WechatAppController {
 
     @Autowired
-    WechatAppService wechatAppService;
-
-    @Autowired
     WechatAppRepository wechatAppRepository;
+    @Autowired
+    WechatAppService wechatAppService;
 
     @ApiOperation(value = "小程序登录接口", notes = "传入微信的code")
     @GetMapping("/login")
@@ -90,8 +89,23 @@ public class WechatAppController {
     @ApiOperation(value = "测试写入接口", notes = "传入微信的code")
     @PostMapping(value = "/Save")
     @ResponseBody
-    public void saveEntity (@RequestBody WechatUserInfo wechatUserInfo){
+    public String saveEntity(@RequestBody String openId) {
+        WechatUserInfo wechatUserInfo=new WechatUserInfo();
+        if (!StringUtil.isEmpty(openId)) {
+            wechatUserInfo.setOpenId(openId);
+            wechatUserInfo.setCreatedDt(new Date());
+        }
 
-        wechatAppService.testSave(wechatUserInfo);
+        wechatAppRepository.save(wechatUserInfo);
+        String token = wechatAppService.wxCreateToken(openId);
+        return token;
+    }
+
+    @ApiOperation(value = "测试解密接口", notes = "传入微信的code")
+    @PostMapping(value = "/drcy")
+    @ResponseBody
+    public WechatUserInfo drcy(@RequestBody String token){
+       WechatUserInfo wechatUserInfo = wechatAppService.vailUserByToken(token);
+       return wechatUserInfo;
     }
 }

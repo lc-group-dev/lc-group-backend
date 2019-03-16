@@ -29,7 +29,7 @@ public class WechatUserInfo {
     //    微信头像地址
     private String avatarUrl;
     private Date createdDt;
-    //    0未知，1男2女
+    //    0未知，1男 , 2 女
     private int gender;
     private String openId;
     private String phoneNum;
