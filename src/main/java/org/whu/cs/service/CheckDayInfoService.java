@@ -98,7 +98,7 @@ public class CheckDayInfoService {
 
     public Map<Object, Object> totalRankList(String userName) {
         Map<Object, Object> ranMap = new HashMap<>();
-        List<CheckDayInfo> checkDayInfoList = checkDayInfoRepository.findByUserName(userName);
+        List<CheckDayInfo> checkDayInfoList = checkDayInfoRepository.findByUsername(userName);
         if (checkDayInfoList == null) {
             return ranMap;
         }

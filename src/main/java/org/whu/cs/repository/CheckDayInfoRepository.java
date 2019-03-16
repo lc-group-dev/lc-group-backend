@@ -17,5 +17,5 @@ public interface CheckDayInfoRepository extends JpaRepository<CheckDayInfo, Stri
     Integer countByDateAndIsChecked(String date, int isChecked);
     Integer countByDate(String date);
 
-    List<CheckDayInfo> findByUserName(String userName);
+    List<CheckDayInfo> findByUsername(String userName);
 }
