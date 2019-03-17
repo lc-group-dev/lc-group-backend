@@ -179,7 +179,7 @@ public class CheckDayInfoService {
         Collections.sort(rankVoList, new Comparator<RankVo>() {
             @Override
             public int compare(RankVo o1, RankVo o2) {
-                return o2.getSolvedQuestion().compareTo(o1.getSolvedQuestion());
+                return o2.getSolvedQuestion()-o1.getSolvedQuestion();
             }
         });
         return rankVoList;
