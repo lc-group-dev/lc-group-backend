@@ -1,6 +1,7 @@
 package org.whu.cs.controller;
 
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -45,12 +46,18 @@ public class CheckDayInfoController {
     }
 
     /*这个接口暂时保留*/
-    @ApiOperation(value = "获取小组打卡排行榜", notes = "")
-    @ApiImplicitParam(name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
-    @GetMapping(value = "/checkRank")
+    @ApiOperation(value = "获取小组打卡排行榜", notes = "solveQuestionRank解决问题总数的排行榜" +
+            "continueCheckDayRank连续打卡天数排行榜" +
+            "currentCheckDayNumRank打卡总数排行榜")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "userName", value = "当前用户名", required = true, dataType = "String"),
+            }
+    )
+    @PostMapping(value = "/checkRank")
     @ResponseBody
-    public Map<String, RankVo> checkRankByDate(@RequestParam String date) {
-        return null;
+    public Map<Object, Object> checkRankByDate(@RequestBody String userName) {
+        return checkDayInfoService.totalRankList(userName);
     }
 
     /**

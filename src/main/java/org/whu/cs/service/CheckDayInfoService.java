@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.whu.cs.bean.CheckDayInfo;
 import org.whu.cs.bean.GroupContantValue;
+import org.whu.cs.bean.Member;
 import org.whu.cs.repository.CheckDayInfoRepository;
 import org.whu.cs.repository.MemberRepository;
 import org.whu.cs.repository.UpvoteRepository;
@@ -86,7 +87,7 @@ public class CheckDayInfoService {
         }
         int total = checkDayInfoList.size();
 //        中断打卡判定为0
-        if (checkDayInfoList.get(total).getIsChecked() == 0 && checkDayInfoList.get(total - 1).getIsChecked() == 0) {
+        if (checkDayInfoList.get(total-1).getIsChecked() == 0 && checkDayInfoList.get(total - 2).getIsChecked() == 0) {
             return 0;
         }
         for (int i = checkDayInfoList.size() - 1; i < 0; i--) {
@@ -111,50 +112,63 @@ public class CheckDayInfoService {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); //设置日期格式
         String date = df.format(new Date());
-        Map<Object, Object> ranMap = new HashMap<>();
-        List<CheckDayInfo> checkDayInfoUser = checkDayInfoRepository.findByUsername(userName);
-        List<CheckDayInfo> checkDayInfoList = checkDayInfoRepository.findAll();
+//        date = "2019-03-05";
+        Map<Object, Object> rankMap = new HashMap<>();
+        List<CheckDayInfo> checkDayInfoUser = checkDayInfoRepository.findByUsernameOrderByDateAsc(userName);
+
         List<CheckDayInfo> todayCheckDayInfoList = checkDayInfoRepository.findByDate(date);
-        if (checkDayInfoList == null || todayCheckDayInfoList == null) {
-            return ranMap;
+        if (checkDayInfoUser == null || todayCheckDayInfoList == null) {
+            rankMap.put("erro checkDayInfoList", checkDayInfoUser.size());
+            return rankMap;
         }
         List<RankVo> rankVoList = new ArrayList<>();
 //        填充rankvo
         fillRankVo(rankVoList, todayCheckDayInfoList);
-
+        if (rankVoList == null) {
+            rankMap.put("erro,rankVoList为", rankVoList.size());
+        }
+//        分别排序
         List<RankVo> solvedQuestion = rankForSolvedQuestion(rankVoList);
+        rankMap.put("solveQuestionRank", solvedQuestion);
         List<RankVo> continueCheckDay = rankForContinueCheckDay(rankVoList);
+        rankMap.put("continueCheckDayRank", continueCheckDay);
         List<RankVo> currentCheckDayNum = rankForCurrentCheckDayNum(rankVoList);
-
-        return ranMap;
+        rankMap.put("currentCheckDayNumRank", currentCheckDayNum);
+        return rankMap;
 
     }
 
-    private void fillRankVo(List<RankVo> rankVoList, List<CheckDayInfo> todayCheckDayInfoList) {
+    public List<RankVo> fillRankVo(List<RankVo> rankVoList, List<CheckDayInfo> todayCheckDayInfoList) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); //设置日期格式
         String date = df.format(new Date());
+//        date = "2019-2019-03-05";
         for (CheckDayInfo check : todayCheckDayInfoList) {
             RankVo rankVo = new RankVo();
             if (check.getUsername() != null) {
                 rankVo.setUserName(check.getUsername());
                 rankVo.setSolvedQuestion(check.getSolvedQuestion());
             }
+            rankVoList.add(rankVo);
         }
         for (RankVo rankVo : rankVoList) {
             rankVo.setCurrentCheckDayNum(checkDayInfoRepository.countCheckDayInfoByUsernameAndIsChecked(rankVo.getUserName(), 1));
-            List<CheckDayInfo> checkDayInfoListUser = checkDayInfoRepository.findByUsername(rankVo.getUserName());
+            List<CheckDayInfo> checkDayInfoListUser = checkDayInfoRepository.findByUsernameOrderByDateAsc(rankVo.getUserName());
             if (checkDayInfoListUser == null) {
                 continue;
             }
             rankVo.setContinueCheckDay(judgeCheckDay(checkDayInfoListUser));
-            Long memberId = memberRepository.findByUsername(rankVo.getUserName()).getMemberId();
-            if (memberId == null) {
+            Member member = memberRepository.findByUsername(rankVo.getUserName());
+            if (member == null) {
                 rankVo.setClickTime(0);
                 rankVo.setAvatarUrl(null);
+            }else {
+                Long memberId = member.getMemberId();
+                rankVo.setClickTime(upvoteRepository.countByToMemberIdAndDate(memberId, date));
+                rankVo.setAvatarUrl(wechatAppRepository.findByMemberId(memberId).getAvatarUrl());
             }
-            rankVo.setClickTime(upvoteRepository.countByToMemberIdAndDate(memberId, date));
-            rankVo.setAvatarUrl(wechatAppRepository.findByMemberId(memberId).getAvatarUrl());
+
         }
+        return rankVoList;
     }
 
     //解决问题数
@@ -165,19 +179,32 @@ public class CheckDayInfoService {
         Collections.sort(rankVoList, new Comparator<RankVo>() {
             @Override
             public int compare(RankVo o1, RankVo o2) {
-                return 0;
+                return o2.getSolvedQuestion().compareTo(o1.getSolvedQuestion());
             }
         });
-        return null;
+        return rankVoList;
     }
 
     //连续打卡天数
-    private List<RankVo> rankForContinueCheckDay(List<RankVo> checkDayInfoList) {
-        return null;
+    private List<RankVo> rankForContinueCheckDay(List<RankVo> rankVoList) {
+        Collections.sort(rankVoList, new Comparator<RankVo>() {
+            @Override
+            public int compare(RankVo o1, RankVo o2) {
+                return o2.getContinueCheckDay().compareTo(o1.getContinueCheckDay());
+            }
+        });
+        return rankVoList;
+
     }
 
     //打卡总天数
-    private List<RankVo> rankForCurrentCheckDayNum(List<RankVo> checkDayInfoList) {
-        return null;
+    private List<RankVo> rankForCurrentCheckDayNum(List<RankVo> rankVoList) {
+        Collections.sort(rankVoList, new Comparator<RankVo>() {
+            @Override
+            public int compare(RankVo o1, RankVo o2) {
+                return o2.getCurrentCheckDayNum().compareTo(o1.getCurrentCheckDayNum());
+            }
+        });
+        return rankVoList;
     }
 }
