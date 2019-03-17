@@ -86,26 +86,26 @@ public class WechatAppController {
         return token;
     }
 
-    @ApiOperation(value = "测试写入接口", notes = "传入微信的code")
-    @PostMapping(value = "/Save")
-    @ResponseBody
-    public String saveEntity(@RequestBody String openId) {
-        WechatUserInfo wechatUserInfo=new WechatUserInfo();
-        if (!StringUtil.isEmpty(openId)) {
-            wechatUserInfo.setOpenId(openId);
-            wechatUserInfo.setCreatedDt(new Date());
-        }
+//    @ApiOperation(value = "测试写入接口", notes = "传入微信的code")
+//    @PostMapping(value = "/Save")
+//    @ResponseBody
+//    public String saveEntity(@RequestBody String openId) {
+//        WechatUserInfo wechatUserInfo=new WechatUserInfo();
+//        if (!StringUtil.isEmpty(openId)) {
+//            wechatUserInfo.setOpenId(openId);
+//            wechatUserInfo.setCreatedDt(new Date());
+//        }
+//
+//        wechatAppRepository.save(wechatUserInfo);
+//        String token = wechatAppService.wxCreateToken(openId);
+//        return token;
+//    }
 
-        wechatAppRepository.save(wechatUserInfo);
-        String token = wechatAppService.wxCreateToken(openId);
-        return token;
-    }
-
-    @ApiOperation(value = "测试解密接口", notes = "传入微信的code")
-    @PostMapping(value = "/drcy")
-    @ResponseBody
-    public WechatUserInfo drcy(@RequestBody String token){
-       WechatUserInfo wechatUserInfo = wechatAppService.vailUserByToken(token);
-       return wechatUserInfo;
-    }
+//    @ApiOperation(value = "测试解密接口", notes = "传入微信的code")
+//    @PostMapping(value = "/drcy")
+//    @ResponseBody
+//    public WechatUserInfo drcy(@RequestBody String token){
+//       WechatUserInfo wechatUserInfo = wechatAppService.vailUserByToken(token);
+//       return wechatUserInfo;
+//    }
 }
