@@ -10,4 +10,5 @@ public interface UpvoteRepository extends JpaRepository<Upvote, String> {
     List<Upvote> findByToMemberIdAndDate(Long toMemberId, String date);
 
     Integer countByToMemberIdAndDate(Long toMemberId, String date);
+
 }

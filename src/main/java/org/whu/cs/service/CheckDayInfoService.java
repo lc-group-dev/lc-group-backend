@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import org.whu.cs.bean.CheckDayInfo;
 import org.whu.cs.bean.GroupContantValue;
 import org.whu.cs.repository.CheckDayInfoRepository;
+import org.whu.cs.repository.MemberRepository;
+import org.whu.cs.repository.UpvoteRepository;
+import org.whu.cs.repository.WechatAppRepository;
 import org.whu.cs.vo.RankVo;
 
 import java.text.DateFormat;
@@ -16,6 +19,14 @@ import java.util.*;
 public class CheckDayInfoService {
     @Autowired
     private CheckDayInfoRepository checkDayInfoRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private UpvoteRepository upvoteRepository;
+    @Autowired
+    private WechatAppRepository wechatAppRepository;
 
     public List<CheckDayInfo> checkDayInfos(String date) {
         return checkDayInfoRepository.findByDate(date);
@@ -97,28 +108,76 @@ public class CheckDayInfoService {
     }
 
     public Map<Object, Object> totalRankList(String userName) {
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); //设置日期格式
+        String date = df.format(new Date());
         Map<Object, Object> ranMap = new HashMap<>();
-        List<CheckDayInfo> checkDayInfoList = checkDayInfoRepository.findByUsername(userName);
-        if (checkDayInfoList == null) {
+        List<CheckDayInfo> checkDayInfoUser = checkDayInfoRepository.findByUsername(userName);
+        List<CheckDayInfo> checkDayInfoList = checkDayInfoRepository.findAll();
+        List<CheckDayInfo> todayCheckDayInfoList = checkDayInfoRepository.findByDate(date);
+        if (checkDayInfoList == null || todayCheckDayInfoList == null) {
             return ranMap;
         }
-        List<RankVo> solvedQuestion = rankForSolvedQuestion(checkDayInfoList);
-        List<RankVo> continueCheckDay = rankForContinueCheckDay(checkDayInfoList);
-        List<RankVo> currentCheckDayNum = rankForCurrentCheckDayNum(checkDayInfoList);
+        List<RankVo> rankVoList = new ArrayList<>();
+//        填充rankvo
+        fillRankVo(rankVoList, todayCheckDayInfoList);
+
+        List<RankVo> solvedQuestion = rankForSolvedQuestion(rankVoList);
+        List<RankVo> continueCheckDay = rankForContinueCheckDay(rankVoList);
+        List<RankVo> currentCheckDayNum = rankForCurrentCheckDayNum(rankVoList);
 
         return ranMap;
 
     }
 
-    private List<RankVo> rankForSolvedQuestion(List<CheckDayInfo> checkDayInfoList) {
+    private void fillRankVo(List<RankVo> rankVoList, List<CheckDayInfo> todayCheckDayInfoList) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd"); //设置日期格式
+        String date = df.format(new Date());
+        for (CheckDayInfo check : todayCheckDayInfoList) {
+            RankVo rankVo = new RankVo();
+            if (check.getUsername() != null) {
+                rankVo.setUserName(check.getUsername());
+                rankVo.setSolvedQuestion(check.getSolvedQuestion());
+            }
+        }
+        for (RankVo rankVo : rankVoList) {
+            rankVo.setCurrentCheckDayNum(checkDayInfoRepository.countCheckDayInfoByUsernameAndIsChecked(rankVo.getUserName(), 1));
+            List<CheckDayInfo> checkDayInfoListUser = checkDayInfoRepository.findByUsername(rankVo.getUserName());
+            if (checkDayInfoListUser == null) {
+                continue;
+            }
+            rankVo.setContinueCheckDay(judgeCheckDay(checkDayInfoListUser));
+            Long memberId = memberRepository.findByUsername(rankVo.getUserName()).getMemberId();
+            if (memberId == null) {
+                rankVo.setClickTime(0);
+                rankVo.setAvatarUrl(null);
+            }
+            rankVo.setClickTime(upvoteRepository.countByToMemberIdAndDate(memberId, date));
+            rankVo.setAvatarUrl(wechatAppRepository.findByMemberId(memberId).getAvatarUrl());
+        }
+    }
+
+    //解决问题数
+    private List<RankVo> rankForSolvedQuestion(List<RankVo> rankVoList) {
+        if (rankVoList == null) {
+            return null;
+        }
+        Collections.sort(rankVoList, new Comparator<RankVo>() {
+            @Override
+            public int compare(RankVo o1, RankVo o2) {
+                return 0;
+            }
+        });
         return null;
     }
 
-    private List<RankVo> rankForContinueCheckDay(List<CheckDayInfo> checkDayInfoList) {
+    //连续打卡天数
+    private List<RankVo> rankForContinueCheckDay(List<RankVo> checkDayInfoList) {
         return null;
     }
 
-    private List<RankVo> rankForCurrentCheckDayNum(List<CheckDayInfo> checkDayInfoList) {
+    //打卡总天数
+    private List<RankVo> rankForCurrentCheckDayNum(List<RankVo> checkDayInfoList) {
         return null;
     }
 }

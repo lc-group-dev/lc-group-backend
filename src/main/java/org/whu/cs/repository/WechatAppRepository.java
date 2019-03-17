@@ -11,4 +11,5 @@ import org.whu.cs.bean.WechatUserInfo;
 public interface WechatAppRepository extends JpaRepository<WechatUserInfo, String> {
     WechatUserInfo findByOpenId(String openId);
 
+    WechatUserInfo findByMemberId(Long memberId);
 }
