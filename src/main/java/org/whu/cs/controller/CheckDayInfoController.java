@@ -2,6 +2,7 @@ package org.whu.cs.controller;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class CheckDayInfoController {
 
     /*这个接口暂时保留*/
     @ApiOperation(value = "获取小组打卡排行榜", notes = "")
-    @ApiImplicitParam(name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
+    @ApiImplicitParam(paramType = "query",name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
     @GetMapping(value = "/checkRank")
     @ResponseBody
     public Map<String, RankVo> checkRankByDate(@RequestParam String date) {
@@ -60,7 +61,7 @@ public class CheckDayInfoController {
      * @throws ParseException the parse exception
      */
     @ApiOperation(value = "获取小组打卡率数据", notes = "小组打卡曲线：从起始日期到现在的所有打卡数据")
-    @ApiImplicitParam(name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
+    @ApiImplicitParam(paramType = "query",name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
     @GetMapping(value = "/checkRatioList")
     @ResponseBody
     public Map<String, Double> checkRatio(@RequestParam String date) throws ParseException {
@@ -94,7 +95,7 @@ public class CheckDayInfoController {
     @ApiOperation(value = "获取爬虫数据写入CheckDayInfo表", notes = "传入CheckDayInfo对象")
     @PostMapping (value = "/putDataToCheckDayInfo")
     @ResponseBody
-    public AjaxJson putDataToCheckDayInfo(@RequestBody CheckDayInfo checkDayInfo) {
+    public AjaxJson putDataToCheckDayInfo(@RequestBody @ApiParam(value = "爬虫数据 打卡信息") CheckDayInfo checkDayInfo) {
         if (checkDayInfo == null) {
             return AjaxJson.error("爬虫数据为空，请重试");
         } else if (checkDayInfoService.saveToDB(checkDayInfo)) {
@@ -102,8 +103,6 @@ public class CheckDayInfoController {
         } else {
             return AjaxJson.error("写入数据失败");
         }
-
-
     }
 
     /**

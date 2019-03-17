@@ -2,6 +2,7 @@ package org.whu.cs.controller;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +28,10 @@ public class MemberController {
 
 
     @ApiOperation(value = "提交LeetCode地址", notes = "链接需要校验格式，地址不可重复")
-    @ApiImplicitParam(name = "url", value = "用户LeetCode或LeetCode-cn主页地址，参考格式： https://leetcode.com/alexlj/ ", required = true, dataType = "String")
+    @ApiImplicitParam(paramType = "query",name = "url", value = "用户LeetCode或LeetCode-cn主页地址，参考格式： https://leetcode.com/alexlj/ ", required = true, dataType = "String")
     @PostMapping(value = "/create")
     @ResponseBody
-    public Map<String, Object> create(String url) {
+    public Map<String, Object> create(@RequestParam String url) {
         Map<String, Object> map = new HashMap<>();
         if (!validService.isValidLeetcodeUrl(url)) {
             map.put("error", url + " 格式有误");
@@ -49,7 +50,7 @@ public class MemberController {
 
     // 后期分页
     @ApiOperation(value = "根据用户状态，查询用户LeetCode地址", notes = "三种状态，normal: 0, deleted：1， locked：2，只爬取normal状态的用户信息")
-    @ApiImplicitParam(name = "status", value = "用户状态 ", required = true, dataType = "int")
+    @ApiImplicitParam(paramType = "query",name = "status", value = "用户状态 ", required = true, dataType = "int")
     @GetMapping(value = "/getMemberAddressList")
     @ResponseBody
     public List<Member> getMemberByStatus(@RequestParam int status) {
@@ -59,7 +60,7 @@ public class MemberController {
     @ApiOperation(value = "获取爬虫数据写入Member表", notes = "传入Member表对象")
     @PostMapping(value = "/putDataToMember")
     @ResponseBody
-    public AjaxJson putDataToMember(@RequestBody Member member) {
+    public AjaxJson putDataToMember(@RequestBody @ApiParam(value = "爬虫数据 人员数据") Member member) {
         if (member == null) {
             return AjaxJson.error("爬虫数据为空，请重试");
         }
