@@ -56,4 +56,6 @@ public interface UpvoteRepository extends JpaRepository<Upvote, String> {
      */
     Upvote save(Upvote upvote);
 
+    Integer countByToMemberIdAndDate(Long toMemberId, String date);
+
 }
