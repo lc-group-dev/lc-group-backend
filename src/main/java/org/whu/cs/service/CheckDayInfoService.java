@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.whu.cs.bean.CheckDayInfo;
 import org.whu.cs.bean.GroupContantValue;
+import org.whu.cs.bean.Member;
 import org.whu.cs.repository.CheckDayInfoRepository;
 import org.whu.cs.vo.RankVo;
 
@@ -75,7 +76,7 @@ public class CheckDayInfoService {
         }
         int total = checkDayInfoList.size();
 //        中断打卡判定为0
-        if (checkDayInfoList.get(total).getIsChecked() == 0 && checkDayInfoList.get(total - 1).getIsChecked() == 0) {
+        if (checkDayInfoList.get(total-1).getIsChecked() == 0 && checkDayInfoList.get(total - 2).getIsChecked() == 0) {
             return 0;
         }
         for (int i = checkDayInfoList.size() - 1; i < 0; i--) {
