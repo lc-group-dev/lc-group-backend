@@ -71,6 +71,9 @@ public class WechatAppController {
             return jsonObject.toString();
         }
         String openId = jsonObject.getString("openid");
+        if (wechatAppService.vailOpenId(openId)){
+            return wechatAppService.wxCreateToken(openId);
+        }
         String sessionKey = jsonObject.getString("session_key");
         WechatUserInfo wechatUserInfo = new WechatUserInfo();
         if (StringUtil.isEmpty(openId)) {

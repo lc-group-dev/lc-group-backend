@@ -122,4 +122,6 @@ public class CheckDayInfoService {
     private List<RankVo> rankForCurrentCheckDayNum(List<CheckDayInfo> checkDayInfoList) {
         return null;
     }
+
+
 }

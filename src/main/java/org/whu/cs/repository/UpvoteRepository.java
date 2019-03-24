@@ -19,6 +19,7 @@ public interface UpvoteRepository extends JpaRepository<Upvote, String> {
      */
     List<Upvote> findByToMemberIdAndDateAndStatus(String toMemberId, String date,int status);
 
+
     /**
      * 根据点赞人的id 和 日期 和 状态 查询数据
      * @param fromMemberId 点赞人的id
@@ -59,3 +60,7 @@ public interface UpvoteRepository extends JpaRepository<Upvote, String> {
     Integer countByToMemberIdAndDate(Long toMemberId, String date);
 
 }
+
+
+
+

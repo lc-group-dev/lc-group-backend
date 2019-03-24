@@ -11,8 +11,8 @@ import lombok.Data;
 public class RankVo {
     //    微信头像
     private String avatarUrl;
-    //    个人打卡总天数
-    private Integer checkDayNum;
+//    //    个人打卡总天数
+//    private Integer checkDayNum;
     //    点赞次数
     private Integer clickTime;
     //    当前打卡天数

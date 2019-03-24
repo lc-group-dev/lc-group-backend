@@ -9,4 +9,6 @@ public interface MemberRepository extends JpaRepository<Member,String> {
     public Member findByUrl(String address);
     public boolean existsByUrl(String address);
     public List<Member> findByStatus(int status);
+
+    Member findByUsername(String userName);
 }

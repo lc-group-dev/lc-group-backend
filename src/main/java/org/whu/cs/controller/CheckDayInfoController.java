@@ -14,6 +14,8 @@ import org.whu.cs.util.AjaxJson;
 import org.whu.cs.vo.RankVo;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,7 +58,9 @@ public class CheckDayInfoController {
     )
     @PostMapping(value = "/checkRank")
     @ResponseBody
-    public Map<Object, Object> checkRankByDate(@RequestBody String userName) {
+    public Map<Object, Object> checkRankByDate(HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("Authorization");
+        String userName="   ";
         return checkDayInfoService.totalRankList(userName);
     }
 

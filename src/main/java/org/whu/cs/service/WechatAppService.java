@@ -46,6 +46,19 @@ public class WechatAppService {
         }
     }
 
+    /*0 用户从未登录 ，1 用户登录但是没有绑定信息，2 用户登录已绑定*/
+    public int checkWeChatStatus(String openId) {
+        WechatUserInfo wechatUserInfo = wechatAppRepository.findByOpenId(openId);
+        if (wechatUserInfo == null) {
+            return 0;
+        } else if (wechatUserInfo.getMemberId() == null || wechatUserInfo.getNick_name() == null || wechatUserInfo.getUserName() == null) {
+            return 1;
+        } else {
+            return 2;
+        }
+
+    }
+
     public WechatUserInfo vailUserByToken(String token) {
         WechatUserInfo wechatUserInfo;
         if (StringUtils.isEmpty(token)) {
@@ -117,5 +130,9 @@ public class WechatAppService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean vailOpenId(String openId) {
+        return wechatAppRepository.existsByOpenId(openId);
     }
 }
