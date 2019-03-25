@@ -10,6 +10,7 @@ import com.github.pagehelper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.whu.cs.bean.AppLoginInfo;
 import org.whu.cs.bean.WechatUserInfo;
 import org.whu.cs.repository.WechatAppRepository;
 
@@ -18,8 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.whu.cs.bean.AppLoginInfo.SECRET;
 
 /**
  * @author:Lucas
@@ -37,6 +36,9 @@ public class WechatAppService {
     @Autowired
     WechatAppRepository wechatAppRepository;
 
+    @Autowired
+    AppLoginInfo appLoginInfo;
+
     public boolean testSave(WechatUserInfo wechatUserInfo) {
         try {
             wechatAppRepository.save(wechatUserInfo);
@@ -44,6 +46,19 @@ public class WechatAppService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /*0 用户从未登录 ，1 用户登录但是没有绑定信息，2 用户登录已绑定*/
+    public int checkWeChatStatus(String openId) {
+        WechatUserInfo wechatUserInfo = wechatAppRepository.findByOpenId(openId);
+        if (wechatUserInfo == null) {
+            return 0;
+        } else if (wechatUserInfo.getMemberId() == null || wechatUserInfo.getNick_name() == null || wechatUserInfo.getUserName() == null) {
+            return 1;
+        } else {
+            return 2;
+        }
+
     }
 
     public WechatUserInfo vailUserByToken(String token) {
@@ -71,7 +86,7 @@ public class WechatAppService {
     public Map<String, Claim> decryToken(String token) {
         DecodedJWT jwt = null;
         try {
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(appLoginInfo.getSECRETKEY())).build();
             jwt = verifier.verify(token);
         } catch (Exception e) {
             // e.printStackTrace();
@@ -105,7 +120,7 @@ public class WechatAppService {
                     .withClaim("openId", openId)
                     .withIssuedAt(iatDate) // sign time
                     .withExpiresAt(expiresDate) // expire time
-                    .sign(Algorithm.HMAC256(SECRET)); // signature
+                    .sign(Algorithm.HMAC256(appLoginInfo.getSECRETKEY())); // signature
             return token;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -117,5 +132,9 @@ public class WechatAppService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean vailOpenId(String openId) {
+        return wechatAppRepository.existsByOpenId(openId);
     }
 }

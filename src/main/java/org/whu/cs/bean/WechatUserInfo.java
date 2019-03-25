@@ -34,5 +34,7 @@ public class WechatUserInfo {
     private String openId;
     private String phoneNum;
     private Date updatedDt;
+//    登录时间
+    private Date loginTime;
     private String userName;
 }
