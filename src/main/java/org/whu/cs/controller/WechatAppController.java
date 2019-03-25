@@ -10,12 +10,15 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.whu.cs.bean.AppLoginInfo;
 import org.whu.cs.bean.WechatUserInfo;
 import org.whu.cs.repository.WechatAppRepository;
 import org.whu.cs.service.WechatAppService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
@@ -105,6 +108,35 @@ public class WechatAppController {
 
     }
 
+    @ApiOperation(value = "小程序登录用户信息保存接口", notes = "传入微信的getUserinfo")
+    @PostMapping("/getUserInfo")
+    @ResponseBody
+    public Map<Object, Object> getUserInfo(@RequestBody WechatUserInfo userInfo, HttpServletRequest request, HttpServletResponse response) {
+        Map<Object, Object> map = new HashMap<>();
+        String token = request.getHeader("Authorization");
+        if (StringUtils.isEmpty(token)) {
+            map.put("token:", "不存在");
+            return map;
+        }
+        WechatUserInfo info = wechatAppService.vailUserByToken(token);
+        if (info == null) {
+            map.put("用户：", "不存在，请重新登录");
+        }
+        if (userInfo.getUserName() != null || userInfo.getNick_name() != null || userInfo.getAddress() != null) {
+            info.setAddress(userInfo.getAddress());
+            info.setAvatarUrl(userInfo.getAvatarUrl() == null ? null : userInfo.getAvatarUrl());
+            info.setUserName(userInfo.getUserName());
+            info.setGender(userInfo.getGender());
+            info.setNick_name(userInfo.getNick_name());
+            info.setLoginTime(new Date());
+            info.setUpdatedDt(new Date());
+            wechatAppRepository.save(info);
+            map.put(" save sucess", new Date());
+        } else {
+            map.put("信息不完全,请重新传入", info);
+        }
+        return map;
+    }
 //    @ApiOperation(value = "测试写入接口", notes = "传入微信的code")
 //    @PostMapping(value = "/Save")
 //    @ResponseBody
