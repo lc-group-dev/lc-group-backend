@@ -35,6 +35,9 @@ public class WechatAppController {
     @Autowired
     WechatAppService wechatAppService;
 
+    @Autowired
+   private AppLoginInfo appLoginInfo;
+
     @ApiOperation(value = "小程序登录接口", notes = "传入微信的code")
     @GetMapping("/login")
     @ResponseBody
@@ -46,8 +49,8 @@ public class WechatAppController {
         }
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + AppLoginInfo.appId
-                + "&secret=" + AppLoginInfo.secret
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + appLoginInfo.getAppId()
+                + "&secret=" + appLoginInfo.getSecret()
                 + "&js_code=" + code + "&grant_type=authorization_code";
         String resultString = " ";
         try {

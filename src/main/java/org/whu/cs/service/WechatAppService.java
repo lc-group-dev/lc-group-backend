@@ -10,6 +10,7 @@ import com.github.pagehelper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.whu.cs.bean.AppLoginInfo;
 import org.whu.cs.bean.WechatUserInfo;
 import org.whu.cs.repository.WechatAppRepository;
 
@@ -18,8 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.whu.cs.bean.AppLoginInfo.SECRET;
 
 /**
  * @author:Lucas
@@ -36,6 +35,9 @@ public class WechatAppService {
     public static final int calendarInterval = 10;
     @Autowired
     WechatAppRepository wechatAppRepository;
+
+    @Autowired
+    AppLoginInfo appLoginInfo;
 
     public boolean testSave(WechatUserInfo wechatUserInfo) {
         try {
@@ -84,7 +86,7 @@ public class WechatAppService {
     public Map<String, Claim> decryToken(String token) {
         DecodedJWT jwt = null;
         try {
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(appLoginInfo.getSECRETKEY())).build();
             jwt = verifier.verify(token);
         } catch (Exception e) {
             // e.printStackTrace();
@@ -118,7 +120,7 @@ public class WechatAppService {
                     .withClaim("openId", openId)
                     .withIssuedAt(iatDate) // sign time
                     .withExpiresAt(expiresDate) // expire time
-                    .sign(Algorithm.HMAC256(SECRET)); // signature
+                    .sign(Algorithm.HMAC256(appLoginInfo.getSECRETKEY())); // signature
             return token;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
