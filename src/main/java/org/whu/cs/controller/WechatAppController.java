@@ -18,6 +18,8 @@ import org.whu.cs.service.WechatAppService;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author:Lucas
@@ -36,9 +38,11 @@ public class WechatAppController {
     @ApiOperation(value = "小程序登录接口", notes = "传入微信的code")
     @GetMapping("/login")
     @ResponseBody
-    public String login(@RequestParam String code) {
+    public Map<Object, Object> login(@RequestParam String code) {
+        Map<Object, Object> map = new HashMap<>();
         if (StringUtil.isEmpty(code)) {
-            return null;
+            String error = "null";
+
         }
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -59,7 +63,9 @@ public class WechatAppController {
             if (resultCode == 200) {
                 resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
             } else {
-                return "请求失败，错误码是：" + resultCode;
+                map.put("请求失败，错误码是", resultCode);
+                return map;
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,25 +74,32 @@ public class WechatAppController {
         JSONObject jsonObject = (JSONObject) JSONObject.parse(resultString);
         /*当jsonObject的size为2时返回的是错误信息*/
         if (jsonObject == null || jsonObject.size() == 2) {
-            return jsonObject.toString();
+            map.put("错误：", jsonObject.toString());
+            return map;
         }
         String openId = jsonObject.getString("openid");
         if (wechatAppService.vailOpenId(openId)){
-            return wechatAppService.wxCreateToken(openId);
-        }
-        String sessionKey = jsonObject.getString("session_key");
-        WechatUserInfo wechatUserInfo = new WechatUserInfo();
-        if (StringUtil.isEmpty(openId)) {
+            int status = wechatAppService.checkWeChatStatus(openId);
+            map.put("token", wechatAppService.wxCreateToken(openId));
+            map.put("status", status);
+            return map;
+        } else {
+            //        String sessionKey = jsonObject.getString("session_key");
+            WechatUserInfo wechatUserInfo = new WechatUserInfo();
+            if (StringUtil.isEmpty(openId)) {
+                map.put("openId为空", openId);
+                return map;
+            }
             wechatUserInfo.setOpenId(openId);
             wechatUserInfo.setCreatedDt(new Date());
+            wechatUserInfo.setLoginTime(new Date());
+            wechatAppRepository.save(wechatUserInfo);
+            String token = wechatAppService.wxCreateToken(openId);
+            map.put("token", token);
+            map.put("status", 1);
+            return map;
         }
 
-
-        wechatAppRepository.save(wechatUserInfo);
-        String token = wechatAppService.wxCreateToken(openId);
-
-
-        return token;
     }
 
 //    @ApiOperation(value = "测试写入接口", notes = "传入微信的code")

@@ -47,7 +47,7 @@ public class CheckDayInfoController {
         return checkDayInfoService.checkDayInfos(date);
     }
 
-    /*这个接口暂时保留*/
+
     @ApiOperation(value = "获取小组打卡排行榜", notes = "solveQuestionRank解决问题总数的排行榜" +
             "continueCheckDayRank连续打卡天数排行榜" +
             "currentCheckDayNumRank打卡总数排行榜")
