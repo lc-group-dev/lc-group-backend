@@ -27,7 +27,7 @@ public class Swagger2 {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("org.whu.cs"))
+                .apis(RequestHandlerSelectors.basePackage("org.whu.cs.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
@@ -36,7 +36,7 @@ public class Swagger2 {
         return new ApiInfoBuilder()
                 .title("一时打卡 | 接口说明文档")
                 .description("基于 Swagger 生成")
-                .termsOfServiceUrl("http://group.hellogod.cn/")
+                .termsOfServiceUrl("https://lc.hellogod.cn/")
                 .contact("lc-group-dev")
                 .version("1.0")
                 .build();

@@ -28,29 +28,28 @@ public class MemberController {
 
 
     @ApiOperation(value = "提交LeetCode地址", notes = "链接需要校验格式，地址不可重复")
-    @ApiImplicitParam(paramType = "query",name = "url", value = "用户LeetCode或LeetCode-cn主页地址，参考格式： https://leetcode.com/alexlj/ ", required = true, dataType = "String")
+    @ApiImplicitParam(paramType = "query", name = "url", value = "用户LeetCode或LeetCode-cn主页地址，参考格式： https://leetcode.com/alexlj/ ", required = true, dataType = "String")
     @PostMapping(value = "/create")
     @ResponseBody
-    public Map<String, Object> create(@RequestParam String url) {
-        Map<String, Object> map = new HashMap<>();
+    public String create(Member member) {
+        String url = member.getUrl();
+        String message = "";
         if (!validService.isValidLeetcodeUrl(url)) {
-            map.put("error", url + " 格式有误");
+            message = url + " 格式有误";
         } else if (!memberService.existsByAddress(url)) {
-            Member member = new Member();
             member.setGmt_create(new Date());
-            member.setUrl(url);
             memberService.save(member);
-            map.put("success", member);
+            message = url + " 已提交";
         } else {
-            map.put("error", url + " 已存在");
+            message = url + " 已存在";
         }
-        return map;
+        return message;
 
     }
 
     // 后期分页
     @ApiOperation(value = "根据用户状态，查询用户LeetCode地址", notes = "三种状态，normal: 0, deleted：1， locked：2，只爬取normal状态的用户信息")
-    @ApiImplicitParam(paramType = "query",name = "status", value = "用户状态 ", required = true, dataType = "int")
+    @ApiImplicitParam(paramType = "query", name = "status", value = "用户状态 ", required = true, dataType = "int")
     @GetMapping(value = "/getMemberAddressList")
     @ResponseBody
     public List<Member> getMemberByStatus(@RequestParam int status) {

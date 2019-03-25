@@ -2,6 +2,8 @@ package org.whu.cs.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Pattern;
+
 /**
  * 数据校验类
  */
@@ -17,6 +19,7 @@ public class ValidService {
      * @return the boolean
      */
     public boolean isValidLeetcodeUrl(String url) {
-       return url != null;
+        String pattern = "https://leetcode(-cn)?.com/([A-Za-z0-9_-]+)/";
+        return Pattern.matches(pattern, url);
     }
 }
