@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.whu.cs.bean.AppLoginInfo;
+import org.whu.cs.bean.Member;
 import org.whu.cs.bean.WechatUserInfo;
+import org.whu.cs.repository.MemberRepository;
 import org.whu.cs.repository.WechatAppRepository;
 import org.whu.cs.service.WechatAppService;
 
@@ -40,6 +42,9 @@ public class WechatAppController {
 
     @Autowired
    private AppLoginInfo appLoginInfo;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @ApiOperation(value = "小程序登录接口", notes = "传入微信的code")
     @GetMapping("/login")
@@ -109,7 +114,7 @@ public class WechatAppController {
     }
 
     @ApiOperation(value = "小程序登录用户信息保存接口", notes = "传入微信的getUserinfo")
-    @PostMapping("/getUserInfo")
+    @PostMapping("/store")
     @ResponseBody
     public Map<Object, Object> getUserInfo(@RequestBody WechatUserInfo userInfo, HttpServletRequest request, HttpServletResponse response) {
         Map<Object, Object> map = new HashMap<>();
@@ -123,15 +128,35 @@ public class WechatAppController {
             map.put("用户：", "不存在，请重新登录");
         }
         if (userInfo.getUserName() != null || userInfo.getNick_name() != null || userInfo.getAddress() != null) {
+            Member member= memberRepository.findByUsername(userInfo.getUserName());
+            if (member==null||member.getMemberId()==null){
+                member.setUrl(userInfo.getAddress());
+                member.setUsername(userInfo.getUserName());
+                member.setStatus(0);
+                member.setGmt_create(new Date());
+                member.setGmt_modified(new Date());
+                try {
+                    memberRepository.save(member);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                info.setMemberId(member.getMemberId());
+            }
             info.setAddress(userInfo.getAddress());
             info.setAvatarUrl(userInfo.getAvatarUrl() == null ? null : userInfo.getAvatarUrl());
             info.setUserName(userInfo.getUserName());
             info.setGender(userInfo.getGender());
             info.setNick_name(userInfo.getNick_name());
+            info.setMemberId(member.getMemberId());
             info.setLoginTime(new Date());
             info.setUpdatedDt(new Date());
-            wechatAppRepository.save(info);
-            map.put(" save sucess", new Date());
+            try {
+                wechatAppRepository.save(info);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            map.put(" save success", new Date());
         } else {
             map.put("信息不完全,请重新传入", info);
         }
