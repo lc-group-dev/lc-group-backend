@@ -11,7 +11,6 @@ import org.whu.cs.bean.CheckDayInfo;
 import org.whu.cs.bean.GroupContantValue;
 import org.whu.cs.service.CheckDayInfoService;
 import org.whu.cs.util.AjaxJson;
-import org.whu.cs.vo.RankVo;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +39,7 @@ public class CheckDayInfoController {
      * @return the list
      */
     @ApiOperation(value = "获取全部用户打卡信息", notes = "每日打卡排行榜")
-    @ApiImplicitParam(paramType = "query",name = "date", value = "日期，格式yyyy-MM-dd", required = true, dataType = "String")
+    @ApiImplicitParam(paramType = "query", name = "date", value = "日期，格式yyyy-MM-dd", required = true, dataType = "String")
     @GetMapping(value = "/day")
     @ResponseBody
     public List<CheckDayInfo> checkDayInfos(@RequestParam String date) {
@@ -60,7 +59,7 @@ public class CheckDayInfoController {
     @ResponseBody
     public Map<Object, Object> checkRankByDate(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("Authorization");
-        String userName="   ";
+        String userName = "   ";
         return checkDayInfoService.totalRankList(userName);
     }
 
@@ -72,7 +71,7 @@ public class CheckDayInfoController {
      * @throws ParseException the parse exception
      */
     @ApiOperation(value = "获取小组打卡率数据", notes = "小组打卡曲线：从起始日期到现在的所有打卡数据")
-    @ApiImplicitParam(paramType = "query",name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
+    @ApiImplicitParam(paramType = "query", name = "date", value = "当天日期，格式yyyy-MM-dd", required = true, dataType = "String")
     @GetMapping(value = "/checkRatioList")
     @ResponseBody
     public Map<String, Double> checkRatio(@RequestParam String date) throws ParseException {
@@ -104,7 +103,7 @@ public class CheckDayInfoController {
     }
 
     @ApiOperation(value = "获取爬虫数据写入CheckDayInfo表", notes = "传入CheckDayInfo对象")
-    @PostMapping (value = "/putDataToCheckDayInfo")
+    @PostMapping(value = "/putDataToCheckDayInfo")
     @ResponseBody
     public AjaxJson putDataToCheckDayInfo(@RequestBody @ApiParam(value = "爬虫数据 打卡信息") CheckDayInfo checkDayInfo) {
         if (checkDayInfo == null) {
@@ -123,7 +122,7 @@ public class CheckDayInfoController {
      * @return the map
      */
     @ApiOperation(value = "获取用户打卡统计信息", notes = "统计信息：时间、人数、打卡人数、打卡率")
-    @ApiImplicitParam(paramType = "query",name = "date", value = "日期，格式yyyy-MM-dd", required = true, dataType = "String")
+    @ApiImplicitParam(paramType = "query", name = "date", value = "日期，格式yyyy-MM-dd", required = true, dataType = "String")
     @GetMapping(value = "/summary")
     @ResponseBody
     public Map<Object, Object> todaySummary(@RequestParam String date) {
