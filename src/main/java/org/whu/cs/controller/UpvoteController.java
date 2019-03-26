@@ -85,7 +85,7 @@ public class UpvoteController {
      * @return upvote 实体类
      */
 
-    @ApiOperation(value="用户点赞或者取消点赞操作",notes = "根据点赞用户id和被赞用户id来进行点赞或者取消点赞 返回 更新后的数据")
+    @ApiOperation(value="用户点赞或者取消点赞操作",notes = "根据点赞用户id和被赞用户id来进行点赞或者取消点赞，返回更新后的数据")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query",name = "fromMemberId",value = "点赞用户Id",required = true,dataType = "String"),
             @ApiImplicitParam(paramType = "query",name="toMemberId",value = "被赞用户Id",required = true,dataType = "String")
@@ -94,5 +94,22 @@ public class UpvoteController {
     @ResponseBody
     public Upvote UpVoteOrUnUpvote(@RequestParam String fromMemberId,@RequestParam String toMemberId){
         return upvoteService.UpvoteOrUnUpvote(fromMemberId,toMemberId);
+    }
+
+    /**
+     * 用户点赞或者取消点赞操作
+     * @param fromMemberId 点赞人id
+     * @param toMemberId 被点赞人Id
+     * @return upvote 实体类
+     */
+    @ApiOperation(value="web未登录用户临时点赞接口（临时）",notes = "根据被赞用户id来进行点赞操作，不限次数")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query",name = "fromMemberId",value = "点赞用户Id",required = false,dataType = "String"),
+            @ApiImplicitParam(paramType = "query",name="toMemberId",value = "被赞用户Id",required = true,dataType = "String")
+    })
+    @PostMapping(value = "/webVote")
+    @ResponseBody
+    public void WebVote(@RequestParam String fromMemberId, @RequestParam String toMemberId) {
+        upvoteService.WebVote(fromMemberId, toMemberId);
     }
 }

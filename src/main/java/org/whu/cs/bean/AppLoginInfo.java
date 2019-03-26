@@ -22,4 +22,32 @@ public class AppLoginInfo {
      */
     @Value("${AppLoginInfo.SECRET}")
     public  String SECRETKEY;
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    public static String getWxLoginUrl() {
+        return wxLoginUrl;
+    }
+
+    public String getSECRETKEY() {
+        return SECRETKEY;
+    }
+
+    public void setSECRETKEY(String SECRETKEY) {
+        this.SECRETKEY = SECRETKEY;
+    }
 }
